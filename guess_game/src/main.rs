@@ -52,8 +52,19 @@ fn main() {
         utilizando o conceito do rust de dar um "shadow" no valor antetior da variavel neste caso se o valor nao
         for um numero uma enumerarion com o erro esta sendo captraca pelo metodo expect
         */
+        
+        //Quando usamos o expect o software aborta no erro para trata-lo de verdade vamos recuperar 
+        // a enumeration de resultado utilizando a clusuma match
+        /*
         let guess: u32 = guess.trim().parse()
             .expect("Please type a number!");
+        */
+
+        let guess: u32 = match guess.trim().parse(){
+            Ok(num)=>num,
+            Err(_)=>continue,
+        };
+
 
 
         /*
