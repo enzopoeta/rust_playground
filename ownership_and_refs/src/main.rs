@@ -28,10 +28,25 @@ fn main() {
         13 |     println!("{}",a);
            |                   ^ value borrowed here after move
 
-        
-        
-
+      
+    Isso acontece porque o rust nao trabalha por padrao com a copia de variaveis da heap e por uma questao de performance e seguranca ele 
+    so permite que o dado seja referenciado por uma unica variavel fazendo assim com que a referencia relacionada com a variavel anterior 
+    seja anulada em detrimento da atribuicao atual, mesmo que a variavel esteja com o escopo valido. Para forcar uma copia de dados da heap 
+    podemos usar  a funcao clone conforme o exemplo abaixo
     */
+
+   let s1 = String::from("hello");
+   let s2 = s1.clone();
+
+   println!("s1 = {}, s2 = {}", s1, s2);
+
+
+   /*
+   Em variaveis que sao definidas inteiramente na stack (tamanho connhecido em tempo de compilacao)
+
+
+   */
+
 
 
 }
