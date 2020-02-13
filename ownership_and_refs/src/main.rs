@@ -1,10 +1,10 @@
 fn main() {
     println!("Hello, world!");
     /*
-        O rust possui um otimo gerenciamento de memoria, mesmo sem ter um garbage colector 
+        O rust possui um otimo gerenciamento de memoria, mesmo sem ter um garbage collector 
         um dos pilares deste gerenciamento eh o mecanismo the ownership onde qq variavel 
         que esteja na heap (onde o tamanho nao e possivel de saber em tempo de compilacao)
-        só pode ter um a unica referencia para exemplificar isso segue o exemplo abaixo :
+        só pode ter um unico "dono" para exemplificar isso segue o exemplo abaixo :
     */
     let a:String = String::from("Uma String");
 
@@ -42,11 +42,30 @@ fn main() {
 
 
    /*
-   Em variaveis que sao definidas inteiramente na stack (tamanho connhecido em tempo de compilacao)
-
-
+   Em variaveis que sao definidas inteiramente na stack (tamanho connhecido em tempo de compilacao) a copia de valores 
+   e feita automaticamente na atribuicao. Ex:
    */
 
+   let a = 1;
+   let b:i32;
+   b=a;
 
+   println!("a = {}, b = {}", a, b);
+   //como podemos observar ambas as variaveis conservaram seu valor ( na verdade o valor de a foi copiado para b)
 
+   /*
+         ownership e funcoes --
+         O mecanismo e parecido com a atribuicao de variaveis... Ao passar uma variavel que nao fica na stack
+         voce esta cedendo a propriedade para a funcao ... se nao 
+
+   */
 }
+
+fn takes_ownership(some_string: String) { // A String e passada para a funcao que se torna "proprietaria" para a mesma
+   println!("{}", some_string);
+} // Here, some_string goes out of scope and `drop` is called. The backing
+ // memory is freed.
+
+fn makes_copy(some_integer: i32) { // some_integer comes into scope
+   println!("{}", some_integer);
+} // Here, some_integer goes out of scope. Nothing special happens.
