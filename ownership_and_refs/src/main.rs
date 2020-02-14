@@ -56,16 +56,40 @@ fn main() {
    /*
          ownership e funcoes --
          O mecanismo e parecido com a atribuicao de variaveis... Ao passar uma variavel que nao fica na stack
-         voce esta cedendo a propriedade para a funcao ... se nao 
-
+         voce esta cedendo a propriedade para a funcao ... se a funcao nao retornar o valor sai de escopo e é perdido
    */
+
+   let x = String::from("Uma String");
+   takes_ownership(x);
+   //println!("{}",x); // ao decomentar essa linha veremos que nao eh mais possivel acessar o valor de x
+   /*
+      quando uma variavel sai de escopo o rust chama uma funcao especial chamada "drop" que implementa o procedimento 
+      de liberacao de memoria -- e funcao do implementador personalizar o drop das suas libs 
+   */
+
+   let y = 156;
+   makes_copy(y);
+   println!("{}",y); // com variaveis da stack como numeros a passagem e feita por copia entao a variavel continua "usavel"
+
+
+   /*
+      Por uma questao de praticidade no rust voce pode utilizar uma referencia para "emprestar" uma variavel para ser utilizada
+      em outros escopos / estruturas sem perder a propriedade da mesma
+   */
+
+
+
+
 }
 
-fn takes_ownership(some_string: String) { // A String e passada para a funcao que se torna "proprietaria" para a mesma
+fn takes_ownership(some_string: String) { // A String e passada para a funcao que se torna "proprietaria" da mesma
    println!("{}", some_string);
-} // Here, some_string goes out of scope and `drop` is called. The backing
- // memory is freed.
+} // Ao sair da funcao a variavel perde o escopo e a memoria e liberada
+ 
 
-fn makes_copy(some_integer: i32) { // some_integer comes into scope
+fn makes_copy(some_integer: i32) { // Como no caso de integers a passagem do parametro e feita por copia a variavel continua usavel
    println!("{}", some_integer);
-} // Here, some_integer goes out of scope. Nothing special happens.
+} // ai sair do escopo o integer tambem removido da memoria
+
+
+
