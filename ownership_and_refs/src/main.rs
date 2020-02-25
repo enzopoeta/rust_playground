@@ -75,12 +75,59 @@ fn main() {
    /*
       Por uma questao de praticidade no rust voce pode utilizar uma referencia para "emprestar" uma variavel para ser utilizada
       em outros escopos / estruturas sem perder a propriedade da mesma
+      lembrando que se a funcao vai alterar a referencia e preciso declara-la como mut na variavel e na passagem como referencia
    */
+  let aString:String = String::from("uma String");
+  print!("variavel declarada '{}' \n",aString);
+  print!("passando string para a funcao calculate length : resultado - >{}",calculate_length(&aString));
+  print!("\nimprimindo o valor da variavel depois da passagem de valor para a funcao por referencia -- > '{}'\n",aString);
+
+/*
+   Existem  regras para referencias :
+
+   -- At any given time, you can have either one mutable reference or any number of immutable references.
+   -- References must always be valid.
+*/
+
+/*
+Um outro tipo de referencia do rust sao as slices. Eles podem ser utilizados com strigs ou arrays numericos
+*/
+let s = String::from("hello world");
+
+let hello = &s[0..5];
+let world = &s[6..11];
+
+print!("{}\n",hello);
+print!("{}\n",world);
+
+
+let a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+
+let slice = &a[4..6];
+
+print!("{},{}",slice[0],slice[1]);
 
 
 
 
 }
+
+/*
+O rust nao permite que voce tenha uma referencia dangling (pendurada)
+na funcao abaixo a referencia retornada é de uma string que vai sair de escopo e perder o valor 
+o compilador nao nos deixa fazer isso
+*/
+
+/*
+fn dangle() -> &String { // dangle returns a reference to a String
+   let s = String::from("hello"); // s is a new String
+   &s // we return a reference to the String, s
+} */
+
+
+
+
 
 fn takes_ownership(some_string: String) { // A String e passada para a funcao que se torna "proprietaria" da mesma
    println!("{}", some_string);
@@ -93,3 +140,6 @@ fn makes_copy(some_integer: i32) { // Como no caso de integers a passagem do par
 
 
 
+fn calculate_length(s: &String) -> usize { // qdo a variavel e passada por referencia ela eh emprestada 
+   s.len()
+}
