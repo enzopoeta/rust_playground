@@ -7,6 +7,13 @@ struct User {
     active: bool,
 }
 
+#[derive(Debug)]
+struct Rectangle {
+    width:u32,
+    height:u32,
+}
+
+
 /// também é possiível adicionar funcões que operam nas instancias de uma structs 
 /// isso é feito com a declaracao impl congforme o exemplo abaixo
 /// o primeiro parametro de funcao sempre deve ser a referencia a propria struct (&self)
@@ -18,7 +25,7 @@ impl User {
 
 
 
-// se temos uma funcao que utiliza parametros com nomes iguais aos atributos da sequence nao precisamos seta-los especificamente ao 
+// se temos uma funcao que utiliza parametros com nomes iguais aos atributos da struct nao precisamos seta-los especificamente ao 
 // fazer a atribuicao como podemos verificar no exemplo abaixo
 fn build_user(email: String, username: String) -> User {
     User {
@@ -90,4 +97,30 @@ fn main() {
     
     /// chamando metodos de uma struct 
     println!("printando o email pelo metodo de instancia da struct User -> {}",user1.get_email_info());
+
+
+
+    // Structs e funcoes associadas
+    /*
+            Em rust e possivel criar com a mesma clausula impl
+            funcoes que nao interagem com os dados mas sim com a struct
+            estas funcoes nao tem como parametro de metodo a referencia &self
+            e podem swer consideradas quase como que metodos estáticos
+
+            Ex:
+    */
+    impl Rectangle {
+        fn square(size: u32) -> Rectangle { // esta funcao permite que um retangulo "quadrado" seja criado
+            Rectangle { width: size, height: size }
+        }
+    }
+
+    // a sintaxe para chamar uma funcao associada :
+    let square_rectangle = Rectangle::square(3);
+    println!("chamando uma funcao associada de Rectangle -> {:?}",square_rectangle);
+
+    
+
+
+
 }
