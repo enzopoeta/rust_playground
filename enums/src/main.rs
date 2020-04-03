@@ -77,19 +77,51 @@ fn main() {
             None,
         }
 
-        
-
-
-
-
-
+        neste a ideia e empacotar o resultado de uma operacao em some quando existe um valor existente a ser retornado na funcao
+        e none quando não existe nenhum valor isto na pratica elimina a necessidade de checagem de valores nulos 
+        tradicional ja que o none eh seguem alguns exemplos de utilização do opttion
     */
 
+    let absent_number: Option<i32> = None;
+    let some_string = Some("a string");
+    let some_number = Some(5); // a enum option ja tem o seu contexto importado por default portanto nao temos que utilizar Option::
+
+    // nao podemos por exemplo somar uma numero com a variavel some_number porque ela e to tipo some no entanto podemos 
+    // "desenvelopar" o valor usando a funcao unwrap -- lembrar de ver a pagina de docomentecao de option
+    let a_sum = 5 + some_number.unwrap(); // a enum option possui uma serie de metodos uteis ... por exemplo podemos fazer o unpack um valor de some invocando a funcao unwrap
+    println!("soma de 5 + o valor que tiramos de dentro do some<t> --> {}",a_sum);
 
 
+    // eh possivel utilizar a construcao match para tratar o valor de enums ..,.para as enums de exemplo da documentacao : 
 
+    #[derive(Debug)] // so we can inspect the state in a minute
+    enum UsState {
+        Alabama,
+        Alaska,
+    }
 
+    
+    enum Coin {
+        Penny,
+        Nickel,
+        Dime,
+        Quarter(UsState),
+    }
 
+    // poderiamos ter a funcao que verifica  cada tipo possivo de coin e realiza uma operacao de acordo com cada um deles
+    fn value_in_cents(coin: Coin) -> u8 {
+        match coin {
+            Coin::Penny => 1,
+            Coin::Nickel => 5,
+            Coin::Dime => 10,
+            Coin::Quarter(state) => {
+                println!("State quarter from {:?}!", state);
+                25
+            },
+        }
+    }
+
+    // podemos utilizar
 
 
 }
