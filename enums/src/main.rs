@@ -110,18 +110,64 @@ fn main() {
 
     // poderiamos ter a funcao que verifica  cada tipo possivo de coin e realiza uma operacao de acordo com cada um deles
     fn value_in_cents(coin: Coin) -> u8 {
+        // podemos utilizar o match para fazer controle de fuxo usando enums
         match coin {
             Coin::Penny => 1,
             Coin::Nickel => 5,
             Coin::Dime => 10,
-            Coin::Quarter(state) => {
+            Coin::Quarter(state) => { // quando as enums tem parametros o match ja faz o unwrap automaticamente 
                 println!("State quarter from {:?}!", state);
                 25
             },
         }
     }
 
-    // podemos utilizar
+    // o match pode ser utilizado para qualquer enum inclusive a Option
+    fn plus_one(x: Option<i32>) -> Option<i32> {
+        match x {
+            None => None,
+            Some(i) => Some(i + 1), //  estamos retornando um outro Some somando um ao resultado do parametro
+        }
+    }
+
+    /*
+         Um detalhe dos matches e que eles sao exaustivos o compilador requer que todas as opções validas
+         sejam testadas.... por exemplo o match :
+
+         match x {
+            Some(i) => Some(i + 1), //  estamos retornando um outro Some somando um ao resultado do parametro
+         }
+
+         vai gerar um erro , pois nao estamos tratando a opção None da enum option
+    */
+
+    // o match tem um mecanismo para tratar opções que não seão tratadas de maneira explícita com o placeholder "_" como no exemplo abaixo:
+
+    let some_u8_value = 0u8;
+    match some_u8_value {
+    1 => println!("one"),
+    3 => println!("three"),
+    5 => println!("five"),
+    7 => println!("seven"),
+    _ => (), // para quaisquer outras opções que não as tratadas acima este é o tratamento padrao
+    }
+
+
+    /*
+     Por conta de suas caracteristicas (exaustivo) o match pode nao ser a melhor maneira pra 
+     um controle de fluxo mais simples para estes casos existe a construcao if let EX:
+    */
+    let some_u8_value = Some(3);
+    if let Some(3) = some_u8_value {
+        println!("three");
+    }
+    // o let if tambem aceita elses...
+
+
+
+
+
+    
 
 
 }
