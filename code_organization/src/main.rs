@@ -7,7 +7,7 @@ use code_organization::ipv4::inner_module;
 // tambem e possivel utilizar aliases para evitar ambiguidades
 use code_organization::ipv4::inner_module as bullshit;
 
-// quando utilizamos u use para funcoes normalmente nao chegamos so ao nivel do modulo da mesma
+// quando utilizamos o use para funcoes normalmente nao chegamos so ao nivel do modulo da mesma ( um jeito de evitar ambiguidades)
 // mas quando usamos o use para structs enums e tuplas deve-se chegar o nivel do objeto em si
 
 
