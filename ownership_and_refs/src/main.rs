@@ -3,7 +3,7 @@ fn main() {
     /*
         O rust possui um otimo gerenciamento de memoria, mesmo sem ter um garbage collector 
         um dos pilares deste gerenciamento eh o mecanismo the ownership onde qq variavel 
-        que esteja na heap (onde o tamanho nao e possivel de saber em tempo de compilacao)
+        que esteja na heap (lugar na memoria para objetos onde o tamanho nao e possivel de se determinar em tempo de compilacao)
         só pode ter um unico "dono" para exemplificar isso segue o exemplo abaixo :
     */
     let a:String = String::from("Uma String");
