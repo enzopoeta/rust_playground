@@ -8,4 +8,4 @@ rm -Rf guess_game/target
 rm -Rf loops_and_flow/target
 rm -Rf ownership_and_refs/target
 rm -Rf structs/target
-
+rm -Rf simple_http_server/target
