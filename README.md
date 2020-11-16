@@ -14,6 +14,7 @@ Lista :
 - functions_and_variables - basico sobre funcoes
 - ownership_and_refs - basico sobre ownership e referencias
 - simple_http_server - primeiro projeto funcional para incorporar todo o aprendizado (**WIP**)
+- command_line_test - esqueleto de aplicativo de linha do comando
 
 
 

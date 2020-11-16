@@ -8,9 +8,9 @@ use std::str::Utf8Error;
 use std::str::FromStr;
 
 #[derive(Debug)]
-pub struct HttpRequest {
-    path: String,
-    query_string: Option<String>,
+pub struct HttpRequest<'buffer> {
+    path: & 'buffer str,
+    query_string: Option<& 'buffer str>,
     method: HttpMethod,
 }
 
@@ -46,24 +46,24 @@ fn get_query_string(request_complete_path:&str)->Option<String> {
 }
 */
 
-fn get_query_string(request_complete_path:&str)->Option<String> {
+fn get_query_string(request_complete_path:&str)->Option<&str> {
 
-    let mut result:Option<String> = None;
+    let mut result:Option<&str> = None;
     let parameters:Vec<&str> = request_complete_path.split("?").collect();
     if parameters.len() >1{
-        result=Some(parameters[1].to_string())
+        result=Some(parameters[1])
     }
 
     result
 
 }
 
-fn get_path(request_complete_path:&str)->String {
+fn get_path(request_complete_path:&str)->&str {
         
     let result:Vec<&str> = request_complete_path.split("?").collect();
     
     
-    result[0].to_string()
+    result[0]
 }
 
 
@@ -71,13 +71,21 @@ fn get_path(request_complete_path:&str)->String {
 // neste caso era necessario um metodo para converter o buffer [u8] e e verificamos que ja existe uma trait
 // que faz esse tipo de conversao no caso temos a std::convert::TryFrom que diferente da From pode falhar e
 // retorna um result
-impl TryFrom<&[u8]> for HttpRequest {
+
+/*
+A sintaxe 'buffer nos retonos de tipo especifica um lifetime para os parametros de entrada e saida
+isso significa que as regioes de memoria do buffer passado como parametro de entrada que estiverem 
+sendo usadas terao seu tempo de vida atrelado ao objeto request de retorno. Isso permite que usemos
+o buffer sem replicar a informacao e nao permite que tenhamos dangling references, mesmo sem ter um mecanismo 
+de garbage collector
+*/
+impl<'buffer> TryFrom<& 'buffer [u8]> for HttpRequest<'buffer> {
     type Error = RequestParseError; // para esta trait e preciso definir qual e o tipo de erro
 
     
 
     
-    fn try_from(buffer: &[u8]) -> Result<Self, Self::Error> {
+    fn try_from(buffer: &'buffer [u8]) -> Result<HttpRequest<'buffer>, Self::Error> {
         
         let request = str::from_utf8(buffer)?;
 
@@ -121,7 +129,7 @@ impl TryFrom<&[u8]> for HttpRequest {
 
         
         
-        let req = HttpRequest {path:path.to_string() ,query_string:q_string,method:method};
+        let req = HttpRequest {path:path ,query_string:q_string,method:method};
         //println!("request debug -- {:?}",req);
         
         Ok(req)        
