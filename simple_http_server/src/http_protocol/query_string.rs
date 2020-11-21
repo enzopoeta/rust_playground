@@ -4,7 +4,7 @@ use std::collections::HashMap;
 // em toda a estrutura do modulo 
 
 
-
+#[derive(Debug)]
 pub struct QueryString<'buffer>{
     data:HashMap<& 'buffer str, QueryStringValue<'buffer>>
 }
@@ -13,6 +13,8 @@ pub struct QueryString<'buffer>{
 // segue um exemplo de querystring - > a=1&b=2&c&d=&e===&d=7&d=abc
 // precisamos tratar todos os casos para estabelecer uma equivalencia chave/ valor para a qs
 
+
+#[derive(Debug)]
 pub enum QueryStringValue<'buffer> {
     Single(& 'buffer str),
     Multiple( Vec<& 'buffer str>)
@@ -69,7 +71,7 @@ impl<'buffer> From<&'buffer str> for QueryString<'buffer>
         
         
         
-        //QueryString{data}
+        QueryString{data}
         
         
         
@@ -77,7 +79,7 @@ impl<'buffer> From<&'buffer str> for QueryString<'buffer>
         
         
         
-        unimplemented!();
+        //unimplemented!();
 
     }
 }

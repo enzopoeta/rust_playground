@@ -1,5 +1,6 @@
 use super::method::HttpMethod;
 use super::method::InvalidMethodError;
+use super::query_string::{QueryString,QueryStringValue};
 use std::convert::TryFrom;
 use std::error::Error;
 use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
@@ -7,11 +8,28 @@ use std::str;
 use std::str::Utf8Error;
 use std::str::FromStr;
 
+
 #[derive(Debug)]
 pub struct HttpRequest<'buffer> {
     path: & 'buffer str,
-    query_string: Option<& 'buffer str>,
+    query_string: Option<QueryString<'buffer >>,
     method: HttpMethod,
+}
+
+impl<'buffer> HttpRequest<'buffer>{
+    pub fn path(&self)-> &str{
+        &self.path
+    }
+
+    pub fn method(&self)-> &HttpMethod{
+        &self.method
+    }
+
+    pub fn query_string(&self)-> Option<&QueryString>{
+        self.query_string.as_ref()
+    }
+
+
 }
 
 
@@ -46,12 +64,12 @@ fn get_query_string(request_complete_path:&str)->Option<String> {
 }
 */
 
-fn get_query_string(request_complete_path:&str)->Option<&str> {
+fn get_query_string(request_complete_path:&str)->Option<QueryString> {
 
-    let mut result:Option<&str> = None;
+    let mut result:Option<QueryString> = None;
     let parameters:Vec<&str> = request_complete_path.split("?").collect();
     if parameters.len() >1{
-        result=Some(parameters[1])
+        result=Some(QueryString::from(parameters[1]))
     }
 
     result
