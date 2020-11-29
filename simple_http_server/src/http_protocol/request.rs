@@ -1,6 +1,6 @@
 use super::method::HttpMethod;
 use super::method::InvalidMethodError;
-use super::query_string::{QueryString,QueryStringValue};
+use super::query_string::{QueryString};
 use std::convert::TryFrom;
 use std::error::Error;
 use std::fmt::{Debug, Display, Formatter, Result as FmtResult};

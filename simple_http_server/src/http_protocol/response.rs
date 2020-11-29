@@ -1,18 +1,26 @@
 use std::io::Result as IOResult;
-use std::net::TcpStream;
 use std::fmt::{Display,Formatter,Result as FmtResult};
 use std::io::Write;
 
 
-pub struct HttpResponse{
+pub struct HttpResponse<'buffer>{
     status_code:HttpResponseStatus,
-    body: Option<String>
+    body: Option<String>,
+    bin_body: Option<Vec<& 'buffer u8>>
 }
 
-impl HttpResponse{
+impl <'buffer>HttpResponse<'buffer>{
 
-    pub fn new(status_code:HttpResponseStatus, body:Option<String>) -> Self {
-        HttpResponse{status_code,body}
+    pub fn new_bin_response(status_code:HttpResponseStatus, bin_file_path:&str) -> HttpResponse<'buffer> {
+        //HttpResponse {status_code,body,bin_body:None}
+        unimplemented!();
+    }
+
+    
+    
+    
+    pub fn new(status_code:HttpResponseStatus, body:Option<String>) -> HttpResponse<'buffer> {
+        HttpResponse {status_code,body,bin_body:None}
     }
     //pub fn send(&self,tcp_stream: & mut TcpStream ) -> IOResult<()>{ funcao original chamando um tipo concreto TcpStream
     //pub fn send(&self,tcp_stream: & mut dyn Write ) -> IOResult<()>{ funcao com dinamic dispatch : colocando a trait Write poderiamos passar como parametro qq classe 
@@ -37,7 +45,7 @@ impl HttpResponse{
 
 }
 
-impl Display for HttpResponse{
+impl <'buffer>Display for HttpResponse<'buffer>{
 
     fn fmt(&self,f: &mut Formatter) -> FmtResult{
         let body = match &self.body{
