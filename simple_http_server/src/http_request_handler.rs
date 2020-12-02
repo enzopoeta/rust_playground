@@ -3,6 +3,7 @@ use crate::http_protocol::{HttpRequest,HttpResponse,HttpResponseStatus,HttpMetho
 use std::path::{PathBuf,Path};
 use std::fs;
 
+
 pub struct DefaultHttpRequestHandler{
 
     path:String
@@ -11,6 +12,8 @@ pub struct DefaultHttpRequestHandler{
 
 impl DefaultHttpRequestHandler{
 
+    
+
     pub fn new(path:String)->Self
     {
         Self{path}
@@ -18,6 +21,7 @@ impl DefaultHttpRequestHandler{
 
     pub fn read_file(&self,file: &str) -> HttpResponse
     {
+       
         println!("PATH ==> {}",self.path);
         println!("PATH ==> {}",file);
         let mut complete_path = PathBuf::new();
@@ -53,10 +57,19 @@ impl DefaultHttpRequestHandler{
         //fs::read_to_string(complete_path).ok() // o .ok() converte a saida de uma funcao que retorna Result<T> para Option<T>
         if(complete_path.is_file())
         {
-            match fs::read_to_string(complete_path){
+            
+
+            match fs::read_to_string(&complete_path){
+                // se o arquivo for um binario o read_to_string vai falhar , ai estou tentando usar
+                // a request binaria
                 Ok(data)=> {return HttpResponse::new(HttpResponseStatus::OK,Some(data))}
                 
-                Err(_)=>{return HttpResponse::new(HttpResponseStatus::BAD_REQUEST,None)}
+
+                Err(_)=>{
+                    
+                   return HttpResponse::new_bin_response(complete_path.as_path().to_str().unwrap());}
+                    
+                 //return HttpResponse::new(HttpResponseStatus::BAD_REQUEST,None)}
 
             }
         }

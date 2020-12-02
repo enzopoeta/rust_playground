@@ -1,25 +1,35 @@
 use std::io::Result as IOResult;
 use std::fmt::{Display,Formatter,Result as FmtResult};
 use std::io::Write;
+use std::fs;
 
-
-pub struct HttpResponse<'buffer>{
+pub struct HttpResponse{
     status_code:HttpResponseStatus,
     body: Option<String>,
-    bin_body: Option<Vec<& 'buffer u8>>
+    bin_body: Option<Vec<u8>>
 }
 
-impl <'buffer>HttpResponse<'buffer>{
+impl HttpResponse{
 
-    pub fn new_bin_response(status_code:HttpResponseStatus, bin_file_path:&str) -> HttpResponse<'buffer> {
-        //HttpResponse {status_code,body,bin_body:None}
-        unimplemented!();
+    pub fn new_bin_response( bin_file_path:&str) -> HttpResponse {
+        
+        let file_arrray = fs::read(bin_file_path);
+        if let Ok(data) = file_arrray{        
+            HttpResponse {status_code:HttpResponseStatus::OK,body:None,bin_body:Some(data)
+            }
+        }
+        else
+        {
+            HttpResponse {status_code:HttpResponseStatus::BAD_REQUEST,body:None,bin_body:None}
+        }
+
+        //unimplemented!();
     }
 
     
     
     
-    pub fn new(status_code:HttpResponseStatus, body:Option<String>) -> HttpResponse<'buffer> {
+    pub fn new(status_code:HttpResponseStatus, body:Option<String>) -> HttpResponse {
         HttpResponse {status_code,body,bin_body:None}
     }
     //pub fn send(&self,tcp_stream: & mut TcpStream ) -> IOResult<()>{ funcao original chamando um tipo concreto TcpStream
@@ -39,13 +49,34 @@ impl <'buffer>HttpResponse<'buffer>{
         // o tcp stream tem a trait Write portanto podemos usar a  a macro write! para escrever na stream
                                     //write!(stream,"{}",response);
         // formatando  a impressao da saida HTTP como deve ser na especificacao
+        if self.body != None {
         write!(tcp_stream,"HTTP/1.1 {} {}\r\n\r\n{}",self.status_code,self.status_code.get_reason(),body)
-
+        }
+        else{
+        match &self.bin_body
+         {
+              Some(body)=>{
+                    
+                let file_bytes:&[u8] = body.as_slice();
+                let response_text = format!("HTTP/1.1 {} {}\r\n\r\n",self.status_code,self.status_code.get_reason());
+                tcp_stream.write_all(response_text.as_bytes());
+                tcp_stream.write_all(file_bytes);
+                tcp_stream.flush()
+                    
+                }
+                None=>write!(tcp_stream,"HTTP/1.1 {} {}\r\n\r\n",HttpResponseStatus::BAD_REQUEST,HttpResponseStatus::BAD_REQUEST.get_reason())
+         }
+        }
     }
+
+            //write!(tcp_stream,"HTTP/1.1 {} {}\r\n\r\n{}",self.status_code,self.status_code.get_reason(),file_bytes)
+
+        //unimplemented!();
+    //}
 
 }
 
-impl <'buffer>Display for HttpResponse<'buffer>{
+impl Display for HttpResponse{
 
     fn fmt(&self,f: &mut Formatter) -> FmtResult{
         let body = match &self.body{
