@@ -63,7 +63,7 @@ fn main(){
     println!("{}",path);
 
 
-    let server = SimpleHttpServer::new("127.0.0.1", "8080");
+    let server = SimpleHttpServer::new(&cmd_options.address,&cmd_options.port );
     //println!("server conf : {:?}", server);
     server.run(DefaultHttpRequestHandler::new(path)); 
 

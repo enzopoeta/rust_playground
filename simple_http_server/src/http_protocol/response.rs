@@ -11,19 +11,9 @@ pub struct HttpResponse{
 
 impl HttpResponse{
 
-    pub fn new_bin_response( bin_file_path:&str) -> HttpResponse {
+    pub fn new_bin_response( bin_data:Vec<u8>) -> HttpResponse {
         
-        let file_arrray = fs::read(bin_file_path);
-        if let Ok(data) = file_arrray{        
-            HttpResponse {status_code:HttpResponseStatus::OK,body:None,bin_body:Some(data)
-            }
-        }
-        else
-        {
-            HttpResponse {status_code:HttpResponseStatus::BAD_REQUEST,body:None,bin_body:None}
-        }
-
-        //unimplemented!();
+        HttpResponse {status_code:HttpResponseStatus::OK,body:None,bin_body:Some(bin_data)}
     }
 
     

@@ -67,9 +67,20 @@ impl DefaultHttpRequestHandler{
 
                 Err(_)=>{
                     
-                   return HttpResponse::new_bin_response(complete_path.as_path().to_str().unwrap());}
+                    let file_array = fs::read(&complete_path);
+                    if let Ok(data) = file_array{        
+                        return HttpResponse::new_bin_response(data)
+                    }
+                    else
+                    {
+                        return HttpResponse::new(HttpResponseStatus::BAD_REQUEST, None) 
+                    }
+                   
+                   
                     
-                 //return HttpResponse::new(HttpResponseStatus::BAD_REQUEST,None)}
+                 //return HttpResponse::new(HttpResponseStatus::BAD_REQUEST,None)
+                
+                }
 
             }
         }
