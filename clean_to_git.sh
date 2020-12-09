@@ -10,3 +10,4 @@ rm -Rf ownership_and_refs/target
 rm -Rf structs/target
 rm -Rf simple_http_server/target
 rm -Rf command_line_test/target
+rm -Rf actix_demo/target
