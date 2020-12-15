@@ -16,5 +16,5 @@ Lista :
 - simple_http_server - primeiro projeto funcional para incorporar todo o aprendizado (**WIP**)
 - command_line_test - esqueleto de aplicativo de linha do comando
 - actix_demo - teste basico das funcionalidades do framework actix (**WIP**)
-
+- funcional_rust - verificando as capacidades funcionais do rust (**WIP**)
 

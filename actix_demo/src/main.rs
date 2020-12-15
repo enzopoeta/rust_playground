@@ -80,7 +80,7 @@ async fn main() -> std::io::Result<()> {
         .unwrap();
     ssl_builder.set_certificate_chain_file("cert.pem").unwrap();
 
-    HttpServer::new(|| {
+    HttpServer::new(move || {
         App::new()
             .wrap(Logger::default()) //middleware de log
             .wrap(Logger::new("%a %{User-Agent}i")) ////middleware de log

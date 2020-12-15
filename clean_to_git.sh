@@ -5,6 +5,7 @@ rm -Rf enums/target
 rm -Rf error_handling/target
 rm -Rf functions_and_variables/target
 rm -Rf guess_game/target
+rm -Rf functional_rust/target
 rm -Rf loops_and_flow/target
 rm -Rf ownership_and_refs/target
 rm -Rf structs/target
