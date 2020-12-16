@@ -60,6 +60,50 @@ fn main() {
     //println!("struct ainda esta aqui {:?}",user); // compilador reclama do borrowing via move
 
 
+    // Como retorna funcoes
+    // o retorno de uma funcao e feito atraves do encapsulamento em um smartpointer Box (o box permite que voce aloque um valor na heap)
+    // O box tem todos os controle normais de escopo do rust
+    enum CharacterAction{
+        Right,
+        Left,
+        Up,
+        Down,
+    }
+    
+    
+    
+    fn get_char_action_impl(char_action: CharacterAction)->Box<dyn Fn((i32,i32))->(i32,i32)> // como Fn e um objeto do tipo trair e preciso colocar o dyn na frente
+    {
+        let move_amplitude=5i32;
+        
+        // o move e necessario para podermos mover o escopo da variavel move_amplitude para fora do escopo da funcao get_char_action_impl
+        match char_action {
+            CharacterAction::Right => Box::new(move |coordinate_pair| {(coordinate_pair.0+move_amplitude,coordinate_pair.1)}),
+            CharacterAction::Down => Box::new(move |coordinate_pair| {(coordinate_pair.0,coordinate_pair.1-move_amplitude)}),
+            CharacterAction::Up => Box::new(move |coordinate_pair| {(coordinate_pair.0,coordinate_pair.1+move_amplitude)}),
+            CharacterAction::Left => Box::new(move |coordinate_pair| {(coordinate_pair.0-move_amplitude,coordinate_pair.1)}),
+        }
+        
+       
+        //let num = 5;Box::new(move |x| x + num)
+    }
+
+    // testando
+    
+    let mut char_position = (0,0);
+    println!("Posicao inicial do personagem : {:?}",char_position);
+    
+    let char_up_action = get_char_action_impl(CharacterAction::Up);
+    char_position = char_up_action(char_position);
+    
+    println!("Nova posicao do personagem depois do char_up_action : {:?}",char_position);
+
+
+
+
+
+
+
 
 
 
