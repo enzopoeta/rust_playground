@@ -1,0 +1,39 @@
+extern crate structopt;
+extern crate stream_viewer;
+use std::io::{ErrorKind};
+use structopt::StructOpt;
+use stream_viewer::cmd_opts::CommandLineOptions;
+use stream_viewer::io;
+use stream_viewer::stats;
+use std::process::*;
+
+
+fn main() {
+
+
+    let cmd_options = CommandLineOptions::from_args();
+    let mut total_bytes = 0; // numero total de bytes lidos
+    
+
+    loop {
+        
+        let buffer = match io::read(&cmd_options.input_file){ // lendo do stdin ou do o arquivo de entrada
+            Ok(x)if x.is_empty()=>break, // end of file - termina o programa
+            Ok(x)=> x, // se ainda tiver dados para ler retorna o numero de bytes lidos
+            Err(error)=>{eprintln!("Nao foi possivel ler o conteudo da entrada escolhida -- erro {}",error);exit(1)},
+
+        };
+        stats::compute_bytes_read(buffer.len(),&mut total_bytes,false); // incrementando o total de bytes lido
+
+        io::write(&cmd_options.output_file, &buffer).unwrap_or_else(|e| {
+            if e.kind() != ErrorKind::BrokenPipe // para o comando de testes "yes | cargo run | head -n 100000 > /dev/null" nao falhar estou ignorando erros do tipo  BrokenPipe
+            {
+                eprintln!("Nao foi possivel escrever na saida escolhida -- erro {}",e)
+            }
+            
+        });
+    }  
+    stats::compute_bytes_read(0,&mut total_bytes,true); // incrementando o total de bytes lido
+    
+
+}
