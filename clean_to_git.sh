@@ -13,3 +13,5 @@ rm -Rf simple_http_server/target
 rm -Rf command_line_test/target
 rm -Rf actix_demo/target
 rm -Rf stream_viewer/target
+rm -Rf xml_parser/target
+

@@ -1,12 +1,13 @@
-use actix_web::middleware::Logger;
 use actix_web::middleware::Compress;
-use actix_web::{get,web, App, Error, HttpRequest, HttpResponse, HttpServer, Responder};
+use actix_web::middleware::Logger;
+use actix_web::{get, web, App, Error, HttpRequest, HttpResponse, HttpServer, Responder};
 use env_logger::Env;
+use jsonwebtoken::{dangerous_insecure_decode, Algorithm, Validation};
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
-use serde::{Serialize,Deserialize};
-
-#[derive(Serialize,Deserialize)]
+#[derive(Serialize, Deserialize)]
 struct User {
     user_id: String,
     user_name: String,
@@ -24,8 +25,7 @@ async fn get_sample(req: HttpRequest) -> impl Responder {
     }
 }
 
-async fn get_data_frompath(req: HttpRequest,name: web::Path<String>,
-) -> impl Responder {
+async fn get_data_frompath(req: HttpRequest, name: web::Path<String>) -> impl Responder {
     format!("Hello {} ", name)
 }
 
@@ -37,10 +37,10 @@ async fn post_json_sample(form: web::Json<User>) -> impl Responder {
     format!("Hello {} from {}!", form.user_name, form.user_role)
 }
 
-#[derive(Serialize,Deserialize)]
+#[derive(Serialize, Deserialize)]
 struct QueryStringParams {
-    param1:String,
-    param2:String
+    param1: String,
+    param2: String,
 }
 
 //#[get("/querystring")] // com esta anotacao nao eh preciso colocar as coisas na inicializacao de rotas
@@ -48,24 +48,44 @@ async fn query_string_sample(info: web::Query<QueryStringParams>) -> impl Respon
     format!("Welcome {}!", info.param1)
 }
 
-async fn header_test(req:HttpRequest)-> impl Responder{
+#[derive(Debug, Serialize, Deserialize)]
+struct Claims {
+    sub: String,
+    resource_access: BTreeMap<String, Role>,
+    preferred_username: String,
+    email: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Role {
+    roles: Vec<String>,
+}
+
+async fn header_test(req: HttpRequest) -> impl Responder {
     let req_headers = req.headers();
 
     let basic_auth_header = req_headers.get("Authorization");
     match basic_auth_header {
-        Some(header)=>{
+        Some(header) => {
             let basic_auth: &str = header.to_str().unwrap();
-            format!("Authorization header value : {}",basic_auth)
+            if !basic_auth.starts_with("Bearer") {
+                format!("INVALID Authorization header value !")
+            } else {
+                //format!("Authorization header value : {}", basic_auth);
+                let jwt_token: String = str::replace(&basic_auth, "Bearer ", "");
+                //format!("Valores decodados do token");
+                format!(
+                    " Valores decodados do token -->{:?}",
+                    dangerous_insecure_decode::<Claims>(&jwt_token)
+                )
+            }
+            //format!("Authorization header value : {}",basic_auth)
         }
-        None=>{
+        None => {
             format!("Authorization header not found")
         }
     }
-    
 }
-
-
-
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -91,9 +111,9 @@ async fn main() -> std::io::Result<()> {
             .route("/path/{name}", web::get().to(get_data_frompath))
             .route("/post_form", web::post().to(post_form_sample))
             .route("/post_json", web::post().to(post_json_sample))
-            .route("/header_test", web::get().to(header_test))
+            .route("/auth_header_test", web::get().to(header_test))
 
-            //.route("/post_form", web::post().to(post_form_sample))
+        //.route("/post_form", web::post().to(post_form_sample))
     })
     //.bind("127.0.0.1:8080")?
     .bind_openssl("127.0.0.1:8080", ssl_builder)?

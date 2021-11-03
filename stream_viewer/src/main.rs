@@ -15,30 +15,15 @@ use stream_viewer::stats;
 
 
 fn main() -> Result<(),std::io::Error> {
-
-
-    
-    //let x:Channel=unbounded();
-
-
+        
     let cmd_options = CommandLineOptions::from_args();
     
     let infile = cmd_options.input_file.clone();
     let outfile = cmd_options.output_file.clone();
 
-    //let stats_sender:Sender<usize>;
-    //let stats_receiver:Receiver<usize>;
     
-    let stats_tx_rx:(Sender<usize>, Receiver<usize>)=unbounded();
-    let writer_tx_rx:(Sender<Vec<u8>>, Receiver<Vec<u8>>)=bounded(1024);
-    let (stats_sender, stats_receiver) = stats_tx_rx.clone();
-    let (writer_sender, writer_receiver) = writer_tx_rx.clone();
-    /*
-    let stats_sender = stats_tx_rx.0.clone();
-    let stats_receiver = stats_tx_rx.1.clone();
-    let writer_sender = writer_tx_rx.0.clone();
-    let writer_receiver = writer_tx_rx.1.clone();
-    */
+    let (stats_sender,stats_receiver):(Sender<usize>, Receiver<usize>)=unbounded();
+    let (writer_sender, writer_receiver):(Sender<Vec<u8>>, Receiver<Vec<u8>>)=bounded(1024);
 
     let read_handle = thread::spawn(move || io::read_loop(&infile, stats_sender, writer_sender));
     
